@@ -1,15 +1,14 @@
 package de.primeapi.util.sql.queries;
 
 import de.primeapi.util.sql.Database;
+import de.primeapi.util.sql.util.AsyncContainer;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Lukas S. PrimeAPI
@@ -38,8 +37,8 @@ public class Collector<T> {
 		return set;
 	}
 
-	public CompletableFuture<Set<T>> getAsSetAsync() {
-		return CompletableFuture.supplyAsync(this::getAsSet);
+	public AsyncContainer<Set<T>> getAsSetAsync() {
+		return new AsyncContainer<>(this::getAsSet);
 	}
 
 	/**
@@ -52,8 +51,8 @@ public class Collector<T> {
 		return resultSet.getObject(1, type);
 	}
 
-	public CompletableFuture<T> getAsync() {
-		return CompletableFuture.supplyAsync(this::get);
+	public AsyncContainer<T> getAsync() {
+		return new AsyncContainer<>(this::get);
 	}
 
 	/**
@@ -66,8 +65,8 @@ public class Collector<T> {
 		if (resultSet.isBeforeFirst()) resultSet.next();
 		return resultSet.getObject(index, type);
 	}
-	public CompletableFuture<T> getAsync(int index) {
-		return CompletableFuture.supplyAsync(() -> get(index));
+	public AsyncContainer<T> getAsync(int index) {
+		return new AsyncContainer<>(() -> get(index));
 	}
 
 
@@ -82,8 +81,8 @@ public class Collector<T> {
 		return resultSet.getObject(column, type);
 	}
 
-	public CompletableFuture<T> getAsync(String column) {
-		return CompletableFuture.supplyAsync(() -> get(column));
+	public AsyncContainer<T> getAsync(String column) {
+		return new AsyncContainer<>(() -> get(column));
 	}
 
 
@@ -96,8 +95,8 @@ public class Collector<T> {
 		return resultSet.next();
 	}
 
-	public CompletableFuture<Boolean> isAnyAsync(){
-		return CompletableFuture.supplyAsync(this::isAny);
+	public AsyncContainer<Boolean> isAnyAsync(){
+		return new AsyncContainer<>(this::isAny);
 	}
 
 	/**
@@ -114,8 +113,8 @@ public class Collector<T> {
 		return array;
 	}
 
-	public CompletableFuture<Object[]> getRowDataAsync(){
-		return CompletableFuture.supplyAsync(this::getRowData);
+	public AsyncContainer<Object[]> getRowDataAsync(){
+		return new AsyncContainer<>(this::getRowData);
 	}
 
 	/**
@@ -131,8 +130,8 @@ public class Collector<T> {
 		return set;
 	}
 
-	public CompletableFuture<Set<Object[]>> getAllRowDataAsync(){
-		return CompletableFuture.supplyAsync(this::getAllRowData);
+	public AsyncContainer<Set<Object[]>> getAllRowDataAsync(){
+		return new AsyncContainer<>(this::getAllRowData);
 	}
 
 
