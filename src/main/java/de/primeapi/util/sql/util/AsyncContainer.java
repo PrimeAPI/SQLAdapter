@@ -45,6 +45,10 @@ public class AsyncContainer<T> {
 	}
 
 
+	public <U> AsyncContainer<U> map(Function<? super T,? extends U> fn){
+		return new AsyncContainer<>(() -> fn.apply(supplier.get()));
+	}
+
 
 	@Override
 	public String toString() {
