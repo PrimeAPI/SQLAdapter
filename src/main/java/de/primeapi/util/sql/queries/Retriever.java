@@ -1,4 +1,4 @@
-package de.primeapi.util.sql.util;
+package de.primeapi.util.sql.queries;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  */
 @Getter
 @AllArgsConstructor
-public class AsyncContainer<T> {
+public class Retriever<T> {
 
 	private final Supplier<T> supplier;
 
@@ -45,8 +45,8 @@ public class AsyncContainer<T> {
 	}
 
 
-	public <U> AsyncContainer<U> map(Function<? super T,? extends U> fn){
-		return new AsyncContainer<>(() -> fn.apply(supplier.get()));
+	public <U> Retriever<U> map(Function<? super T,? extends U> fn){
+		return new Retriever<>(() -> fn.apply(supplier.get()));
 	}
 
 

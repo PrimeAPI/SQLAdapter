@@ -1,7 +1,6 @@
 package de.primeapi.util.sql.queries;
 
 import de.primeapi.util.sql.Database;
-import de.primeapi.util.sql.util.AsyncContainer;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -28,7 +27,7 @@ public class Collector<T> {
 	 * @return The Set of the first column of all rows
 	 */
 	@SneakyThrows
-	public Set<T> getAsSet() {
+	private Set<T> getAsSetRaw() {
 		Set<T> set = new HashSet<>();
 		resultSet.beforeFirst();
 		while (resultSet.next()) {
@@ -37,8 +36,8 @@ public class Collector<T> {
 		return set;
 	}
 
-	public AsyncContainer<Set<T>> getAsSetAsync() {
-		return new AsyncContainer<>(this::getAsSet);
+	public Retriever<Set<T>> getAsSet() {
+		return new Retriever<>(this::getAsSetRaw);
 	}
 
 	/**
@@ -46,13 +45,13 @@ public class Collector<T> {
 	 * @return The first column of the first row
 	 */
 	@SneakyThrows
-	public T get() {
+	private T getRaw() {
 		if (resultSet.isBeforeFirst()) resultSet.next();
 		return resultSet.getObject(1, type);
 	}
 
-	public AsyncContainer<T> getAsync() {
-		return new AsyncContainer<>(this::get);
+	public Retriever<T> get() {
+		return new Retriever<>(this::getRaw);
 	}
 
 	/**
@@ -61,12 +60,12 @@ public class Collector<T> {
 	 * @return Returns the row indicated the index of the first row
 	 */
 	@SneakyThrows
-	public T get(int index) {
+	private T getRaw(int index) {
 		if (resultSet.isBeforeFirst()) resultSet.next();
 		return resultSet.getObject(index, type);
 	}
-	public AsyncContainer<T> getAsync(int index) {
-		return new AsyncContainer<>(() -> get(index));
+	public Retriever<T> get(int index) {
+		return new Retriever<>(() -> getRaw(index));
 	}
 
 
@@ -76,13 +75,13 @@ public class Collector<T> {
 	 * @return The value if the column given by {@code column} of the first row
 	 */
 	@SneakyThrows
-	public T get(String column) {
+	private T getRaw(String column) {
 		if (resultSet.isBeforeFirst()) resultSet.next();
 		return resultSet.getObject(column, type);
 	}
 
-	public AsyncContainer<T> getAsync(String column) {
-		return new AsyncContainer<>(() -> get(column));
+	public Retriever<T> get(String column) {
+		return new Retriever<>(() -> getRaw(column));
 	}
 
 
@@ -91,12 +90,12 @@ public class Collector<T> {
 	 * @return Whether or not there is a next row
 	 */
 	@SneakyThrows
-	public boolean isAny() {
+	private boolean isAnyRaw() {
 		return resultSet.next();
 	}
 
-	public AsyncContainer<Boolean> isAnyAsync(){
-		return new AsyncContainer<>(this::isAny);
+	public Retriever<Boolean> isAny(){
+		return new Retriever<>(this::isAnyRaw);
 	}
 
 	/**
@@ -104,7 +103,7 @@ public class Collector<T> {
 	 * @return All columns values in a row in an array
 	 */
 	@SneakyThrows
-	public Object[] getRowData() {
+	private Object[] getRowDataRaw() {
 		if (resultSet.isBeforeFirst()) resultSet.next();
 		Object[] array = new Object[resultSet.getMetaData().getColumnCount()];
 		for (int i = 0; i < array.length; i++) {
@@ -113,25 +112,25 @@ public class Collector<T> {
 		return array;
 	}
 
-	public AsyncContainer<Object[]> getRowDataAsync(){
-		return new AsyncContainer<>(this::getRowData);
+	public Retriever<Object[]> getRowData(){
+		return new Retriever<>(this::getRowDataRaw);
 	}
 
 	/**
 	 * @return A Set of all rows' columns values in a row in an array
 	 */
 	@SneakyThrows
-	public Set<Object[]> getAllRowData() {
+	private Set<Object[]> getAllRowDataRaw() {
 		Set<Object[]> set = new HashSet<>();
 		resultSet.beforeFirst();
 		while (resultSet.next()) {
-			set.add(getRowData());
+			set.add(getRowDataRaw());
 		}
 		return set;
 	}
 
-	public AsyncContainer<Set<Object[]>> getAllRowDataAsync(){
-		return new AsyncContainer<>(this::getAllRowData);
+	public Retriever<Set<Object[]>> getAllRowDataAsync(){
+		return new Retriever<>(this::getAllRowDataRaw);
 	}
 
 
